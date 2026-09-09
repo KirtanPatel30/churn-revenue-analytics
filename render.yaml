@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: churn-revenue-analytics
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+    healthCheckPath: /

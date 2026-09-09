@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+.vscode/
+*.egg-info/
+
+# Uncomment if you'd rather regenerate these via run_pipeline.py
+# instead of committing them to git:
+# data/processed_customers.csv
+# data/segmented_customers.csv
+# data/scored_customers.csv
+# models/churn_model.pkl
+# models/feature_importance.csv
