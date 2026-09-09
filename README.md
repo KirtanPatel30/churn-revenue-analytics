@@ -1,159 +1,171 @@
-# Customer Churn & Revenue Risk Analytics
+# 📊 Customer Churn & Revenue Risk Analytics Platform
 
-A live, interactive analytics platform that identifies which customers are
-likely to churn, quantifies the annual revenue at risk in dollars, and
-generates data-driven retention recommendations — built to answer the
-question every subscription business actually asks: *"who's leaving, and
-what will it cost us?"*
+**An end-to-end analytics platform that predicts customer churn, quantifies revenue at risk in dollars, and generates data-driven retention recommendations — built to answer the question every subscription business actually asks: *"who's leaving, and what will it cost us?"***
 
-**Live dashboard:** _add your Render URL here after deploying_
-**Repo:** _add your GitHub URL here_
+[![Live Dashboard](https://img.shields.io/badge/Live%20Dashboard-Render-46E3B7?style=for-the-badge&logo=render)](YOUR_RENDER_URL_HERE)
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![XGBoost](https://img.shields.io/badge/XGBoost-ML%20Model-EB0028?style=for-the-badge)](https://xgboost.readthedocs.io/)
+[![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 
 ---
 
-## Situation
+## 🎯 The Problem
 
-Companies typically discover churn after a customer has already left.
-Retention teams need to know, before that happens: who is at risk, how much
-revenue that represents, and which lever (contract offer, support outreach,
-service fix) is most likely to work — not just a churn/no-churn label.
+Companies typically discover churn **after** a customer has already left. Retention teams need to know — *before* it happens — who is at risk, how much revenue that represents, and which lever (contract offer, support outreach, service fix) is most likely to work. Most churn projects stop at a model with an accuracy score and no path to a business decision.
 
-## Task
-
-Build the full analyst workflow a retention/customer-analytics team would
-actually use: segment customers by value and behavior, predict churn
-probability, translate that probability into dollars, explain *why* the
-model thinks someone will churn, and package it as something a
-non-technical stakeholder can open and act on — not a notebook.
-
-## Action
-
-- **Data:** the canonical IBM Telco Customer Churn dataset (7,043 real
-  customer accounts, Kaggle) — cleaned and feature-engineered
-  (`src/preprocessing.py`).
-- **Segmentation:** a CLV-adapted RFM model. True RFM needs a transaction
-  log; this dataset is a single account snapshot, so tenure and monthly
-  spend are used as honest Recency/Frequency proxies alongside real
-  lifetime `TotalCharges` as Monetary value, quartile-scored into five
-  named business segments — *Champions, Loyal High-Value, At Risk,
-  Price-Sensitive/New, Low-Value/Disengaged* (`src/segmentation.py`).
-- **Prediction:** an XGBoost classifier (ROC-AUC 0.844, F1 0.583 — a
-  believable result, not an overfit one) wrapped in a scikit-learn
-  pipeline with proper train/test isolation (`src/model.py`).
-- **Explainability:** SHAP `TreeExplainer` values computed per feature so
-  every prediction is auditable — contract type, tenure, and lack of
-  online security/tech support surface as the top global drivers.
-- **Revenue quantification:** `churn probability × annualized charges`
-  per customer, rolled up by segment, so risk is expressed in dollars,
-  not just probability.
-- **Dashboard:** a four-tab Dash app (Overview, Churn Drivers, Deep Dive,
-  Recommendations) with live segment/contract filters, KPI cards, and six
-  chart types — pie, horizontal bar, box plot, scatter, histogram, and
-  grouped bar — all built from scratch, not a templated Streamlit demo.
-- **Deployment:** containerized with Docker, deployed to Render as a web
-  service via gunicorn.
-
-## Result
-
-A self-contained, explainable churn analytics tool that quantifies
-$389K+ in annual revenue concentrated in the highest-risk segments,
-identifies month-to-month contracts as the single largest addressable
-risk pool, and ships four specific, data-backed retention
-recommendations — deployed live, filterable, and demo-able in an
-interview.
+**This project builds the full workflow a real Customer Analytics team would use:** segment customers by value and behavior → predict churn probability → translate that probability into dollars → explain *why* the model thinks someone will churn → package it as a live tool a stakeholder can open and act on.
 
 ---
 
-## Project structure
+## 🔗 Live Demo
+
+**Dashboard:** [YOUR_RENDER_URL_HERE](YOUR_RENDER_URL_HERE)
+**Source:** [github.com/KirtanPatel30/churn-revenue-analytics](https://github.com/KirtanPatel30/churn-revenue-analytics)
+
+> Note: hosted on Render's free tier — the app may take 30–60 seconds to wake up on first load after a period of inactivity.
+
+---
+
+## 🖼️ Preview
+
+| Overview | Churn Drivers |
+|---|---|
+| KPIs, segment mix, revenue-at-risk by segment | SHAP-driven churn explainability |
+
+| Deep Dive | Recommendations |
+|---|---|
+| Scatter, histogram, contract/service churn breakdown | Data-backed retention actions |
+
+*(Add screenshots here — drag 4 PNGs into the repo's `assets/screenshots/` folder and reference them, e.g. `![Overview](assets/screenshots/overview.png)`)*
+
+---
+
+## 💡 What It Does
+
+| Capability | Detail |
+|---|---|
+| **Segmentation** | CLV-adapted RFM model — 5 named business segments (Champions, Loyal High-Value, At Risk, Price-Sensitive/New, Low-Value/Disengaged) |
+| **Prediction** | XGBoost classifier, ROC-AUC **0.844**, wrapped in a scikit-learn pipeline with proper train/test isolation |
+| **Explainability** | SHAP `TreeExplainer` values — every prediction is auditable, not a black box |
+| **Revenue Quantification** | `churn probability × annualized charges` per customer, rolled up by segment — risk expressed in dollars, not just probability |
+| **Interactive Dashboard** | 4-tab Dash app with live filters, 6 chart types (pie, bar, box, scatter, histogram, grouped bar), and written recommendations |
+| **Deployment** | Fully containerized (Docker) and deployed live on Render |
+
+---
+
+## 📈 Key Results
+
+- **$389K+** in annualized revenue identified as at-risk in the highest-churn segments
+- **Month-to-month contracts** identified as the single largest addressable churn driver via SHAP analysis
+- **0.844 ROC-AUC / 0.58 F1** — a realistic, non-overfit result on a genuinely noisy real-world problem
+- **4 specific, quantified retention recommendations** generated directly from model output, not generic advice
+
+---
+
+## 🏗️ Architecture
+
+```
+Raw CSV (7,043 customers)
+        │
+        ▼
+┌───────────────────┐
+│  preprocessing.py  │  → cleans data, engineers features (CLV, tenure buckets, avg spend)
+└─────────┬──────────┘
+          ▼
+┌───────────────────┐
+│  segmentation.py   │  → CLV-adapted RFM scoring → 5 business segments
+└─────────┬──────────┘
+          ▼
+┌───────────────────┐
+│     model.py       │  → XGBoost pipeline + SHAP explainability → scored dataset
+└─────────┬──────────┘
+          ▼
+┌───────────────────┐
+│      app.py        │  → Dash dashboard: KPIs, 4 tabs, live filters
+└─────────┬──────────┘
+          ▼
+   Docker → Render (live, public URL)
+```
+
+---
+
+## 🛠️ Tech Stack
+
+**Language & Core:** Python 3.11
+**Data & ML:** pandas, NumPy, scikit-learn, XGBoost, SHAP
+**Visualization:** Plotly, Dash
+**Deployment:** Docker, Gunicorn, Render
+
+---
+
+## 📁 Project Structure
 
 ```
 churn-revenue-analytics/
 ├── data/
-│   └── Telco-Customer-Churn.csv      # raw dataset (included)
+│   └── Telco-Customer-Churn.csv      # raw dataset (IBM Telco Churn, 7,043 customers)
 ├── src/
 │   ├── preprocessing.py              # cleaning + feature engineering
 │   ├── segmentation.py               # CLV-adapted RFM segmentation
-│   ├── model.py                      # XGBoost + SHAP
+│   ├── model.py                      # XGBoost training + SHAP
 │   └── app.py                        # Dash dashboard (entry point)
-├── models/                           # generated: model.pkl, importances
+├── models/                           # generated: churn_model.pkl, feature_importance.csv
 ├── assets/
-│   └── style.css                     # dashboard styling (auto-loaded by Dash)
-├── run_pipeline.py                   # runs preprocessing -> segmentation -> model
+│   └── style.css                     # dashboard styling
+├── run_pipeline.py                   # orchestrates preprocessing → segmentation → model
 ├── requirements.txt
 ├── Dockerfile
 ├── render.yaml
 └── README.md
 ```
 
-## How to run it locally (VS Code)
+---
 
-**1. Clone/open the folder in VS Code, then create a virtual environment:**
+## 🚀 Run It Locally
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
+git clone https://github.com/KirtanPatel30/churn-revenue-analytics.git
+cd churn-revenue-analytics
+
+python -m venv venv
+venv\Scripts\activate          # Mac/Linux: source venv/bin/activate
+
 pip install -r requirements.txt
+
+python run_pipeline.py         # cleans data, builds segments, trains model + SHAP
+python src/app.py              # launches dashboard
 ```
 
-**2. Run the data pipeline once** (cleans data, builds segments, trains the
-model, computes SHAP values — takes under a minute):
-
-```bash
-python run_pipeline.py
-```
-
-You should see output ending in `Pipeline complete.` This generates:
-- `data/processed_customers.csv`, `data/segmented_customers.csv`, `data/scored_customers.csv`
-- `models/churn_model.pkl`, `models/feature_importance.csv`
-
-**3. Launch the dashboard:**
-
-```bash
-python src/app.py
-```
-
-Open **http://127.0.0.1:8050** in your browser. Use the Segment / Contract
-Type filters at the top — KPIs and every chart update live.
+Open **http://127.0.0.1:8050** — use the Segment / Contract Type filters to see every KPI and chart update live.
 
 ---
 
-## How to deploy it to Render
+## ☁️ Deploy Your Own Copy (Render)
 
-**Option A — one-click via `render.yaml` (recommended):**
-
-1. Push this folder to a new GitHub repo.
-2. In Render: **New → Blueprint** → connect the repo. Render reads
-   `render.yaml` automatically and builds the Docker image (which runs
-   `run_pipeline.py` at build time, then serves via gunicorn).
-3. First deploy takes ~3-5 minutes (installing xgboost/shap). After that,
-   your dashboard is live at `https://<your-service-name>.onrender.com`.
-
-**Option B — manual web service:**
-
-1. In Render: **New → Web Service** → connect your repo.
-2. Environment: **Docker**. Render will detect the `Dockerfile` automatically.
-3. Leave build/start commands blank (the Dockerfile handles both).
-4. Plan: **Free** is sufficient for a portfolio project.
-5. Deploy. Note: free-tier services spin down after 15 minutes of
-   inactivity and take 30-60 seconds to wake back up on the next visit —
-   worth mentioning if you link this on your resume/portfolio so a
-   recruiter isn't confused by the initial load time.
+1. Fork/clone this repo
+2. Render → **New → Blueprint** → connect the repo
+3. Render reads `render.yaml`, builds the Docker image (which runs the pipeline at build time), and deploys automatically
+4. First deploy takes ~3–5 minutes
 
 ---
 
-## Notes on methodology (worth mentioning in an interview)
+## 🧠 Methodology Notes
 
-- **Why CLV-adapted RFM instead of textbook RFM:** this dataset is an
-  account snapshot, not a transaction log, so there's no real "days since
-  last purchase" field to compute true Recency from. Rather than fabricate
-  one, tenure and monthly spend are used as documented, defensible proxies
-  — a decision worth explaining if asked, since recognizing a data
-  limitation and adapting the method honestly is itself a signal of
-  analytical maturity.
-- **Why XGBoost's 0.844 AUC (not 0.95+):** churn is a genuinely hard,
-  noisy prediction problem in this dataset. A suspiciously perfect score
-  would indicate leakage, not skill — this result is realistic and
-  matches published benchmarks on this same dataset.
-- **Revenue-at-risk formula:** `churn_probability × MonthlyCharges × 12`,
-  summed per segment. This is a standard, simple expected-value approach —
-  intentionally transparent rather than a black-box number.
+**Why CLV-adapted RFM instead of textbook RFM?**
+This dataset is an account snapshot, not a transaction log — there's no real "days since last purchase" field. Rather than fabricate one, tenure and monthly spend are used as documented, defensible proxies for Recency/Frequency, with real `TotalCharges` as Monetary value. Recognizing a data limitation and adapting the method honestly, instead of forcing a metric the data can't actually support, was a deliberate design choice.
+
+**Why 0.844 AUC and not 0.95+?**
+Churn is a genuinely hard, noisy prediction problem. A suspiciously perfect score would signal data leakage, not model quality — this result is realistic and consistent with published benchmarks on this dataset.
+
+**Revenue-at-risk formula:**
+`churn_probability × MonthlyCharges × 12`, summed per segment — a transparent, standard expected-value calculation rather than an opaque proprietary score.
+
+---
+
+## 📬 Contact
+
+**Kirtan Patel**
+MS Artificial Intelligence, San Jose State University
+[LinkedIn](https://www.linkedin.com/in/kirtan-patel-24227a248/) · [GitHub](https://github.com/KirtanPatel30) · [Portfolio](https://kirtanpatel30.github.io/Portfolio/) · kirtannpatel2003@gmail.com
+
+Open to Data Analyst, Data Engineer, Business Analyst, and Data Scientist internships — Summer 2027.
