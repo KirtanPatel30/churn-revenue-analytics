@@ -36,7 +36,19 @@ Companies typically discover churn **after** a customer has already left. Retent
 |---|---|
 | Scatter, histogram, contract/service churn breakdown | Data-backed retention actions |
 
-*(Add screenshots here — drag 4 PNGs into the repo's `assets/screenshots/` folder and reference them, e.g. `![Overview](assets/screenshots/overview.png)`)*
+## 🖼️ Preview
+
+### Overview — KPIs, segment mix, revenue-at-risk by segment
+![Overview](assets/overview.png)
+
+### Churn Drivers — SHAP-driven explainability
+![Churn Drivers](assets/churn-drivers.png)
+
+### Deep Dive — scatter, histogram, contract/service breakdown
+![Deep Dive](assets/deep-dive.png)
+
+### Recommendations — data-backed retention actions
+![Recommendations](assets/recommendations.png)
 
 ---
 
