@@ -19,7 +19,7 @@ Companies typically discover churn **after** a customer has already left. Retent
 
 ## 🔗 Live Demo
 
-**Dashboard:** [YOUR_RENDER_URL_HERE](YOUR_RENDER_URL_HERE)
+**Dashboard:** [https://churn-revenue-analytics.onrender.com/]
 **Source:** [github.com/KirtanPatel30/churn-revenue-analytics](https://github.com/KirtanPatel30/churn-revenue-analytics)
 
 > Note: hosted on Render's free tier — the app may take 30–60 seconds to wake up on first load after a period of inactivity.
